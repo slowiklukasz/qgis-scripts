@@ -1,0 +1,8 @@
+SELECT p1.*, bo.*, byr.*
+FROM P1_powyzej_100 p1
+LEFT OUTER JOIN bobek bo
+	ON p1.obj_id = bo.'ID Obiektu'
+LEFT OUTER JOIN byrczek byr
+	ON p1.obj_id = byr.'ID Obiektu'
+WHERE  byr.'ID Drzewo' <> '' OR bo.'ID Drzewo' <> ''
+ORDER BY byr.'ID Obiektu' ASC

@@ -1,0 +1,17 @@
+SELECT 
+	gsv, 
+	COUNT(gsv) AS cnt, 
+	ROUND(100 * CAST(COUNT(gsv) AS double) /(SELECT CAST(COUNT(*) AS double) FROM nasadzenia_2021),5) as perc
+FROM(	
+	SELECT 
+		obj_id, 
+		zona, 
+		area, 
+		pt, 
+		CASE 
+			WHEN varieta <> ''  THEN genere || ' ' || specie || ' ' || varieta
+			ELSE genere || ' ' || specie
+		END as gsv
+	FROM nasadzenia_2021)
+GROUP BY gsv
+ORDER BY PERC desc, gsv ASC

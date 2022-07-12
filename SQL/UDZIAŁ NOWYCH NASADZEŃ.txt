@@ -1,0 +1,19 @@
+SELECT 
+	gsv,
+	COUNT(gsv) AS cnt, 
+	ROUND(100 * CAST(COUNT(gsv) AS double) /(SELECT CAST(COUNT(*) AS double) FROM p1 WHERE note LIKE '%ZZM/U%'),5) as perc
+FROM(	
+	SELECT 
+		obj_id,
+		zona, 
+		area,
+		note,
+		pt, 
+		CASE 
+			WHEN varieta <> ''  THEN genere || ' ' || specie || ' ' || varieta
+			ELSE genere || ' ' || specie
+		END as gsv
+	FROM p1
+	WHERE note LIKE '%ZZM/U%')
+GROUP BY gsv
+ORDER BY PERC desc, gsv ASC

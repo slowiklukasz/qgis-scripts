@@ -1,0 +1,9 @@
+SELECT DISTINCT (gsv) 
+FROM(	
+	SELECT obj_id, zona, area, pt, 
+		CASE 
+			WHEN varieta <> ''  THEN genere || ' ' || specie || ' ' || varieta
+			ELSE genere || ' ' || specie
+		END as gsv
+	FROM p1)
+	AS subqery

@@ -1,0 +1,52 @@
+## SELECTING VALUES THAT SHOWS MORE THAN ONCE IN GROUP
+select pt, count(*) from P1 
+group by pt
+having count(*)>1;
+
+
+
+## SELECTING VALUES THAT SHOWS ONLY ONCE IN GROUP
+select "Nr ARBOTAG",count(*) from RG
+group by "Nr ARBOTAG"
+having count(*)=1;
+
+
+
+## NUMBER OF DUPLICTED RECORDS
+select 
+(select count(*) from p1) - (select count(distinct(pt)) from p1);
+
+
+
+## ALL OF ABOVE TOGETHER
+select 
+(select count(*) from p1) all_tags, 
+(select count(*) from p1 where pt is null) empty_tags,
+(select count(*) from p1) - (select count(*) from p1 where pt is null) diff
+
+
+
+## DIFFERENCE BETWEEN JOINED AND EMPTY TAGS
+select
+
+(select count(*) from p1
+where pt not in(
+	select "Nr ARBOTAG" from RG
+	join p1 on p1.pt = RG."Nr ARBOTAG"
+	order by p1.pt DESC)) empty_tags,
+	
+(select count(*) from RG
+	join p1 on p1.pt = RG."Nr ARBOTAG"
+	order by p1.pt DESC) joined_tags,
+	
+(select count(*) from p1) all_tags
+	
+	
+
+
+## VALUES THAT DIDNT JOIN
+select "Nr ARBOTAG" from RG
+where "Nr ARBOTAG" not in(
+	select "Nr ARBOTAG" from RG
+	join p1 on p1.pt = RG."Nr ARBOTAG"
+	order by p1.pt DESC)

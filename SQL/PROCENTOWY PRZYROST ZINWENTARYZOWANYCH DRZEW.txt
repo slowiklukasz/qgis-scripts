@@ -1,0 +1,23 @@
+SELECT 
+	gsv, 
+	data_agg,
+	COUNT(gsv) AS cnt, 
+	ROUND(100 * CAST(
+		COUNT(gsv) AS double) /(SELECT CAST(COUNT(*) AS double) 
+		FROM nasadzenia_2021 
+		WHERE data_agg > '2022-02-01'AND zona = 18 AND area='075'),5) as perc
+FROM(	
+	SELECT 
+		obj_id, 
+		zona, 
+		area, 
+		pt,
+		data_agg,
+		CASE 
+			WHEN varieta <> ''  THEN genere || ' ' || specie || ' ' || varieta
+			ELSE genere || ' ' || specie
+		END as gsv
+	FROM nasadzenia_2021
+	WHERE data_agg > '2022-02-01' AND zona = 18 AND area='075')
+GROUP BY gsv, data_agg
+ORDER BY PERC desc, data_agg ASC
