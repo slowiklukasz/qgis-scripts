@@ -9,11 +9,19 @@ AND ALSO SELECT VTA BY RISK CLASS.
 **********************************************************************
 """
 
+"""
+EQUAL TO:
+    SELECT * FROM vta
+    GROUP BY vta."ID Obiektu"
+    HAVING MAX(vta."Data realizacji")
+"""
+
+
 """USER INUTS"""
 analyzed_layer = "vta" # layer to make selection (csv, xlsx, shp)
 
 duplicated = True
-non_duplicated = False
+non_duplicated = True
 
 cat_a = True
 cat_b = True
@@ -71,16 +79,18 @@ def choose_newest_date(duplicated_ftrs):
     return duplicated_ids
 
 
-def create_nonduplicated_lst(ftrs, duplicated_ftrs):
+def create_nonduplicated_lst(lyr, duplicated_ftrs):
     """Creates a list with id for trees with only 1 VTA"""
+    ftrs = lyr.getFeatures()
     nonduplicated_ids = []
     for ftr in ftrs:
         if ftr["ID Obiektu"] not in duplicated_ftrs:
             nonduplicated_ids.append(ftr.id())
+            
     return nonduplicated_ids
     
 
-def rep_based_select(duplicated, non_duplicated):
+def rep_based_select(duplicated, non_duplicated, duplicated_ids, nonduplicated_ids):
     """Create list with duplicted (or not) "ID Obiektu" field"""
     selected_ids = []
     if duplicated==True and non_duplicated==True:
@@ -111,11 +121,10 @@ def risk_based_select(cat_a, cat_b, cat_c, cat_cd, cat_d, vta_lyr):
         expression += "or \"Klasa ryzyka\" like \'C-D%\'"
     if not cat_d:
         expression += "or \"Klasa ryzyka\" like \'D%\'"
-    expression = expression[2:]
-    
+
     ids_to_remove = []
-    
     if expression != "":
+        expression = expression[2:]
         request = QgsFeatureRequest()
         request.setFilterExpression(expression)
         for ftr in vta_lyr.getFeatures(request):
@@ -148,10 +157,10 @@ if __name__ == "__console__":
     duplicated_ids = choose_newest_date(duplicated_ftrs)
     
     # LIST WITH IDS FOR FEATURES WITH NOT DUPLICTED "ID Obiektu"
-    nonduplicated_ids = create_nonduplicated_lst(ftrs, duplicated_ftrs)
+    nonduplicated_ids = create_nonduplicated_lst(vta_lyr, duplicated_ftrs)
 
     # SELECTION BASED ON REPETITION OF "ID Obiektu" FIELD
-    selected_ids = rep_based_select(duplicated, non_duplicated)
+    selected_ids = rep_based_select(duplicated, non_duplicated, duplicated_ids, nonduplicated_ids)
     
     # SELECTION BASED ON CLASS RISK
     red_lst = risk_based_select(cat_a, cat_b, cat_c, cat_cd, cat_d, vta_lyr)
@@ -164,3 +173,4 @@ if __name__ == "__console__":
     stop = time.time()
     print("Finished in: {} seconds".format(round(stop-start, 2)))
     print("Number of selected features: {}".format(vta_lyr.selectedFeatureCount()))
+    
