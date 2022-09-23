@@ -1,0 +1,34 @@
+-- EXPIRED VTA
+select * from zad
+group by zad."ID Obiektu"
+having zad."Przewidywana data zakończenia" < (SELECT CURRENT_DATE) and zad."Rodzaj pracy" like "%ponowna Kontrola VTA%"
+
+-- ACTIVE VTA
+select * from zad
+where zad."Rodzaj pracy" like "%ponowna Kontrola VTA%" and zad."Przewidywana data zakończenia" >= (SELECT CURRENT_DATE))
+
+-- EXPIRED MORE THAN 1 VTA
+select * from zad
+group by zad."ID Obiektu"
+having count(zad."Przewidywana data zakończenia" < (SELECT CURRENT_DATE) and zad."Rodzaj pracy" like "%ponowna Kontrola VTA%")>1
+
+-- UNCLOSED VTA WITH NEWER VTA MADE
+SELECT * FROM
+	(select * from zad
+	group by zad."ID Obiektu"
+	having zad."Przewidywana data zakończenia" < (SELECT CURRENT_DATE) and zad."Rodzaj pracy" like "%ponowna Kontrola VTA%") AS e
+JOIN 
+	(select * from zad
+	where zad."Rodzaj pracy" like "%ponowna Kontrola VTA%" and zad."Przewidywana data zakończenia" >= (SELECT CURRENT_DATE)) as a
+ON e."ID Obiektu" = a."ID Obiektu"
+WHERE a."Przewidywana data zakończenia" > e."Przewidywana data zakończenia"
+
+-- CUTTED TREE WITH UNCLOSED VTA
+-- "%ycinka%" - celowe, część prac wprowadzona z dużej, część z małej litery
+SELECT * FROM
+	(SELECT * FROM zad
+	WHERE zad."Rodzaj pracy" LIKE "%ponowna Kontrola VTA%") AS vta
+JOIN
+	(SELECT * FROM zad
+	WHERE zad."Rodzaj pracy" LIKE "%ycinka%") AS wyc
+ON vta."ID Obiektu" = wyc."ID Obiektu"
