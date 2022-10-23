@@ -6,13 +6,20 @@ import itertools
 def calc_angle(v_1, v_2, v_3):
     # https://gis.stackexchange.com/questions/380320/finding-interior-angles-of-a-triangle-using-pyqgis
     # points = [QgsPointXY(0, 0), QgsPointXY(1, 2), QgsPointXY(2, 0)]
-    points = [v_1, v_2, v_3]
-    n = len(points)
-    per = range(n)
-
-    for i, j, k in itertools.permutations(per, 3):
-        triangle = QgsTriangle( points[i], points[j], points[k])
-        angles = [round(degrees(a), 2) for a in triangle.angles()]
+    
+    # ver A
+    #    points = [v_1, v_2, v_3]
+    #    n = len(points)
+    #    per = range(n)
+    #
+    #    for i, j, k in itertools.permutations(per, 3):
+    #        triangle = QgsTriangle( points[i], points[j], points[k])
+    #        angles = [round(degrees(a), 2) for a in triangle.angles()]
+    #        
+    # ver B
+        
+    triangle = QgsTriangle(v_1, v_2, v_3)
+    angles = [round(degrees(a), 2) for a in triangle.angles()]
         
     return angles
     
@@ -22,19 +29,13 @@ def create_angles_lst(vertiles_lst):
     n = len(vertiles_lst)
     for i in range(n-1): # last angle == first angle
         if i==0:
-            v_1 = vertiles_lst[-2] # [-1] == [0] -> QgsPolygon
-            v_2 = vertiles_lst[i]
-            v_3 = vertiles_lst[i+1]
-            angl = calc_angle(v_1, v_2, v_3)
-            angls_lst.append(angl[1])
-            print(angl[1])
+            v_1 = vertiles_lst[-2] # lst[-1] == lst[0] -> QgsPolygon
         else:
-            v_1 = vertiles_lst[i-1] # [-1] == [0] -> QgsPolygon
-            v_2 = vertiles_lst[i]
-            v_3 = vertiles_lst[i+1]
-            angl = calc_angle(v_1, v_2, v_3)
-            angls_lst.append(angl[1])
-            print(angl[1])
+            v_1 = vertiles_lst[i-1] # lst[-1] == lst[0] -> QgsPolygon
+        v_2 = vertiles_lst[i]
+        v_3 = vertiles_lst[i+1]
+        angl = calc_angle(v_1, v_2, v_3)
+        angls_lst.append(angl[1])
             
     angls_lst.append(angls_lst[0]) # [-1] == [0] -> QgsPolygon
     
