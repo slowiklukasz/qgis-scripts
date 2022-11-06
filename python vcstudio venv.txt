@@ -1,0 +1,48 @@
+1. install python ,vscode
+2. cmd - cd, mkdir, rmdir cls etc
+3. code . -> open vcstudio
+
+EXTENSIONS
+1. create any .py file - 
+2. install recommended python extension (or install extension manually)
+3. pylint extension (or python -m pip install pylint) - shows errors in code
+4. autopep8 - formatting (to use shift+alt+f)
+5. Code Runner - allows to use shortcuts for 'run', also reduce lines of output in console (path, env etc)
+	- add new setting (to use venv python for code runner):
+		- "code-runner.executorMap": {
+						"python":"$pythonPath -u fullFileName"
+						}
+		- "code-runner.clearPreviousOutput":true
+
+
+RUNNING CODE
+1. rclick - run python in terminal
+
+GLOBAL SETTINGS
+1. open command pallete (view - command palette)
+2. color theme (predawn)
+3. file icon
+4. open default settings
+	a. ctrl+f -> python.defaultInterpreterPath": "python", - cop that
+	c. lower left corner - manage - settings (only changed vcs setting)
+	d. add python.defaultInterpreterPath": "c:...." with full path to modified settings
+
+
+READING DEFAULT PYTHON INTERPRETER VIA TERMINAL
+1. python
+2. import sys
+3. sys.executable
+
+
+CREATING VIRTUAL ENV
+1. open terminal in current project folder
+2. cd 
+3. python -m venv env_name
+4. env_name/Scripts/activate (or select python interpreter from bottom)
+5. to setup default env for project - use python.defaultInterpreterPath": "path" in project json file
+6. installing packages: pip install, conda install -n ...
+
+
+INTEGRATING WITH JUPYTER
+1. conda install -n ipykernel
+2. view - command pallette - new notebook
